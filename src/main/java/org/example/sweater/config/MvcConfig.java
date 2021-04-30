@@ -1,7 +1,9 @@
 package org.example.sweater.config;
 
 import org.example.sweater.properties.SweaterProperties;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -13,6 +15,11 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class MvcConfig implements WebMvcConfigurer {
 
     private final String uploadDir;
+
+    @Bean
+    public RestTemplate getRestTemplate(){
+        return new RestTemplate();
+    }
 
     public MvcConfig(SweaterProperties properties) {
         this.uploadDir = properties.getPath();
