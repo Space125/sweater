@@ -2,6 +2,7 @@ package org.example.sweater.service;
 
 import org.example.sweater.domain.Role;
 import org.example.sweater.domain.User;
+import org.example.sweater.properties.ServerProperties;
 import org.example.sweater.repository.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -26,12 +27,16 @@ public class UserService implements UserDetailsService {
 
     private final PasswordEncoder passwordEncoder;
 
+    private final ServerProperties serverProperties;
+
     public UserService(UserRepository userRepository,
                        MailSenderService mailSenderService,
-                       PasswordEncoder passwordEncoder) {
+                       PasswordEncoder passwordEncoder,
+                       ServerProperties serverProperties) {
         this.userRepository = userRepository;
         this.mailSenderService = mailSenderService;
         this.passwordEncoder = passwordEncoder;
+        this.serverProperties = serverProperties;
     }
 
     @Override
@@ -67,8 +72,9 @@ public class UserService implements UserDetailsService {
             String message = String.format(
                     "Hello, %s\n" +
                             "Welcome to Sweater.\n" +
-                            "Please visit next link: http://localhost:8080/activate/%s for activate your account.",
-                    user.getUsername(), user.getActivationCode()
+                            "Please visit next link: http://%s:%d/activate/%s for activate your account.",
+                    user.getUsername(),serverProperties.getHostname(),
+                    serverProperties.getPort(), user.getActivationCode()
             );
 
             mailSenderService.send(user.getEmail(), "Activation code", message);
